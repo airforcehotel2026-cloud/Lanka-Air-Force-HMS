@@ -1,1 +1,0 @@
-import{i as e,h as r,j as c}from"./QBtn-mHwnX4U4.js";import{k as n,h as i,c as l}from"./index-BDzPw-bA.js";const d=n({name:"QCardActions",props:{...e,vertical:Boolean},setup(a,{slots:s}){const o=c(a),t=l(()=>`q-card__actions ${o.value} q-card__actions--${a.vertical===!0?"vert column":"horiz row"}`);return()=>i("div",{class:t.value},r(s.default))}});export{d as Q};
