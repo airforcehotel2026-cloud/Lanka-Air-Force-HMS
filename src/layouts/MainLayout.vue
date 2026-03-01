@@ -171,6 +171,23 @@
               >
             </q-item-section>
           </q-item>
+
+          <q-item
+            clickable
+            v-ripple
+            to="/inventory"
+            active-class="bg-slaf-primary text-white text-weight-bold rounded-borders q-mx-sm q-mb-xs transition-bg"
+          >
+            <q-item-section avatar>
+              <q-icon name="inventory_2" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Inventory & Stock</q-item-label>
+              <q-item-label caption :class="$route.path.includes('/inventory') ? 'text-blue-2' : ''"
+                >Banquet Assets Management</q-item-label
+              >
+            </q-item-section>
+          </q-item>
         </template>
       </q-list>
     </q-drawer>

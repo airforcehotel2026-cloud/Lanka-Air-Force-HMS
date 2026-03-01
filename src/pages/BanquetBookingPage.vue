@@ -42,6 +42,24 @@
                     <q-btn round dense flat icon="search" color="primary" @click="searchByNIC" />
                   </template>
                 </q-input>
+                <!-- CRM BADGE: Appears if returning customer -->
+                <q-slide-transition>
+                  <div v-if="isReturningCustomer" class="q-mt-sm">
+                    <q-badge color="positive" class="q-pa-xs">
+                      <q-icon name="star" color="white" class="q-mr-xs" />
+                      Returning Customer
+                    </q-badge>
+                    <q-btn
+                      flat
+                      dense
+                      color="primary"
+                      label="View History"
+                      size="sm"
+                      class="q-ml-sm"
+                      @click="showHistoryDialog = true"
+                    />
+                  </div>
+                </q-slide-transition>
               </div>
               <div class="col-12 col-md-4">
                 <q-input v-model="form.clientName" outlined dense label="Client Name" />
@@ -832,6 +850,49 @@
         </div>
       </div>
     </div>
+
+    <!-- CRM History Dialog -->
+    <q-dialog v-model="showHistoryDialog">
+      <q-card style="width: 700px; max-width: 80vw">
+        <q-card-section class="bg-primary text-white row items-center justify-between">
+          <div class="text-h6">
+            <q-icon name="history" class="q-mr-sm" size="sm" />
+            Customer Booking History
+          </div>
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+
+        <q-card-section>
+          <div class="text-subtitle1 text-weight-bold q-mb-sm">
+            {{ form.clientName }} ({{ form.nic }})
+          </div>
+
+          <q-list bordered separator v-if="customerHistory && customerHistory.length > 0">
+            <q-item v-for="(booking, idx) in customerHistory" :key="idx">
+              <q-item-section avatar>
+                <q-avatar color="blue-1" text-color="primary" icon="event" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label class="text-weight-bold">{{ booking.event }}</q-item-label>
+                <q-item-label caption>
+                  <q-icon name="place" size="xs" /> Venue: {{ booking.venue || 'N/A' }}
+                  <span class="q-ml-sm"
+                    ><q-icon name="group" size="xs" /> Pax: {{ booking.pax || 0 }}</span
+                  >
+                </q-item-label>
+              </q-item-section>
+              <q-item-section side top>
+                <q-badge color="grey-8">{{ booking.date }}</q-badge>
+              </q-item-section>
+            </q-item>
+          </q-list>
+
+          <div v-else class="text-grey-7 text-center q-pa-md">
+            No past bookings found for this customer.
+          </div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -839,6 +900,7 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useMenuStore } from 'src/stores/menuStore'
 import { useEventStore } from 'src/stores/eventStore'
+import { useCrmStore } from 'src/stores/crmStore'
 import { useQuasar } from 'quasar'
 
 // Logo URL for GitHub Pages compatibility
@@ -847,6 +909,7 @@ const logoUrl = computed(() => import.meta.env.BASE_URL + 'images/logo.png')
 // Initialize Stores
 const menuStore = useMenuStore()
 const eventStore = useEventStore()
+const crmStore = useCrmStore()
 const $q = useQuasar()
 
 onMounted(() => {
@@ -938,17 +1001,38 @@ watch(
   },
 )
 
-// Mock Database for quick search
+// CRM & Search Logic
+const isReturningCustomer = ref(false)
+const showHistoryDialog = ref(false)
+const customerHistory = ref([])
+
 const searchByNIC = () => {
-  if (form.value.nic === '123456789V' || form.value.nic === '200012345678') {
-    form.value.clientName = 'Sqn Ldr A.B. Perera'
-    form.value.profession = 'Air Force Officer'
-    form.value.address = 'SLAF Base, Katunayake'
-    form.value.telephone = '0112345678'
-    form.value.mobile = '0771234567'
-    form.value.email = 'perera@slaf.lk'
+  if (!form.value.nic) {
+    $q.notify({ type: 'warning', message: 'Please enter an NIC/Passport number to search.' })
+    return
+  }
+
+  const customer = crmStore.getCustomerByNIC(form.value.nic)
+  if (customer) {
+    // Auto-fill form
+    form.value.clientName = customer.name || ''
+    form.value.profession = customer.profession || ''
+    form.value.address = customer.address || ''
+    form.value.telephone = customer.telephone || ''
+    form.value.mobile = customer.mobile || ''
+    form.value.email = customer.email || ''
+
+    // Set CRM state
+    isReturningCustomer.value = true
+    customerHistory.value = customer.bookings || []
+
+    $q.notify({ type: 'positive', message: 'Customer found and details auto-filled.' })
   } else {
-    alert('No existing records found for this NIC.')
+    // Reset CRM state
+    isReturningCustomer.value = false
+    customerHistory.value = []
+
+    $q.notify({ type: 'info', message: 'No existing customer records found for this NIC.' })
   }
 }
 
@@ -1231,6 +1315,18 @@ const saveBookingToStore = () => {
     status: 'Confirmed',
     color: 'slaf-primary',
   })
+
+  // Also save to CRM
+  if (form.value.nic) {
+    crmStore.saveOrUpdateCustomer(form.value, {
+      date: form.value.eventDate,
+      eventType: form.value.eventType,
+      package: form.value.package,
+      venue: form.value.venue,
+      guests: form.value.guests,
+    })
+  }
+
   return true
 }
 
