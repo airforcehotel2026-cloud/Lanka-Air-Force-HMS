@@ -4,6 +4,7 @@
     <q-header elevated class="bg-slaf-primary text-white print-hide">
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
+        <img src="/images/logo.png" alt="Eagles' Lagoon View" class="toolbar-logo q-mr-sm" />
         <q-toolbar-title class="text-weight-bold"> Eagles' Lagoon View </q-toolbar-title>
         <div class="q-mr-sm">Receptionist Dashboard</div>
         <q-avatar size="32px" color="slaf-accent" text-color="black">
@@ -14,11 +15,9 @@
 
     <!-- Sidebar / Drawer -->
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered class="bg-grey-1 print-hide">
-      <div class="q-pa-md text-center bg-slaf-primary text-white">
-        <q-avatar size="70px" class="q-mb-md bg-white text-slaf-primary font-weight-bold">
-          SLAF
-        </q-avatar>
-        <div class="text-weight-bold text-h6">Sri Lanka Air Force</div>
+      <div class="q-pa-md text-center bg-slaf-primary text-white sidebar-header">
+        <img src="/images/logo.png" alt="Eagles' Lagoon View" class="sidebar-logo q-mb-sm" />
+        <div class="text-weight-bold text-h6">Eagles' Lagoon View</div>
         <div class="text-caption text-slaf-accent">Hotel Management System</div>
       </div>
 
@@ -172,9 +171,30 @@ $slaf-accent: #ffd700;
 }
 .q-item {
   border-radius: 8px;
-  margin: 0 8px 4px 8px; /* Give some breathing room to the hover state */
+  margin: 0 8px 4px 8px;
 }
 .q-item:not(.bg-slaf-primary):hover {
-  background: #f0f4f8; /* Soft blue-grey hover */
+  background: #f0f4f8;
+}
+
+/* Logo styles */
+.toolbar-logo {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1); /* Makes logo white on dark toolbar */
+}
+
+.sidebar-header {
+  padding: 20px 16px 16px;
+}
+
+.sidebar-logo {
+  width: 120px;
+  height: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1); /* White logo on dark sidebar */
+  display: block;
+  margin: 0 auto;
 }
 </style>
