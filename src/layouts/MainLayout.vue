@@ -4,7 +4,7 @@
     <q-header elevated class="bg-slaf-primary text-white print-hide">
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
-        <img src="/images/logo.png" alt="Eagles' Lagoon View" class="toolbar-logo q-mr-sm" />
+        <img :src="logoUrl" alt="Eagles' Lagoon View" class="toolbar-logo q-mr-sm" />
         <q-toolbar-title class="text-weight-bold"> Eagles' Lagoon View </q-toolbar-title>
         <div class="q-mr-sm">Receptionist Dashboard</div>
         <q-avatar size="32px" color="slaf-accent" text-color="black">
@@ -16,7 +16,7 @@
     <!-- Sidebar / Drawer -->
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered class="bg-grey-1 print-hide">
       <div class="q-pa-md text-center bg-slaf-primary text-white sidebar-header">
-        <img src="/images/logo.png" alt="Eagles' Lagoon View" class="sidebar-logo q-mb-sm" />
+        <img :src="logoUrl" alt="Eagles' Lagoon View" class="sidebar-logo q-mb-sm" />
         <div class="text-weight-bold text-h6">Eagles' Lagoon View</div>
         <div class="text-caption text-slaf-accent">Hotel Management System</div>
       </div>
@@ -141,9 +141,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const leftDrawerOpen = ref(false)
+
+const logoUrl = computed(() => import.meta.env.BASE_URL + 'images/logo.png')
 
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
