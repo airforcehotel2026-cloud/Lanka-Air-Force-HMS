@@ -28,7 +28,7 @@
         >
           <q-icon name="payments" size="40px" class="text-slaf-primary q-mb-sm" />
           <div class="text-h4 text-weight-bold text-grey-9">
-            රු {{ formatCurrency(totalRevenue) }}
+            {{ formatCurrency(totalRevenue) }}
           </div>
           <div class="text-subtitle2 text-grey-7 text-uppercase">Est. Revenue (30 Days)</div>
         </q-card>
@@ -131,7 +131,7 @@
           <q-card-section class="col q-pt-lg column justify-center">
             <div class="row justify-between q-mb-sm">
               <div class="text-grey-8">Collected</div>
-              <div class="text-weight-bold text-green-8">රු {{ formatCurrency(paidRevenue) }}</div>
+              <div class="text-weight-bold text-green-8">{{ formatCurrency(paidRevenue) }}</div>
             </div>
             <q-linear-progress
               :value="revenueProgress"
@@ -143,11 +143,11 @@
             <div class="row justify-between q-mb-sm">
               <div class="text-grey-8">Pending / Deposits</div>
               <div class="text-weight-bold text-orange-8">
-                රු {{ formatCurrency(pendingRevenue) }}
+                {{ formatCurrency(pendingRevenue) }}
               </div>
             </div>
             <div class="text-caption text-center text-grey-6 q-mt-sm">
-              Total Expected: රු {{ formatCurrency(totalRevenue) }}
+              Total Expected: {{ formatCurrency(totalRevenue) }}
             </div>
           </q-card-section>
         </q-card>
@@ -169,7 +169,7 @@
             <div class="trend-chart-container full-width">
               <div v-for="(stat, idx) in revenueTrend" :key="idx" class="trend-bar-group">
                 <div class="trend-value text-caption text-grey-8 q-mb-xs">
-                  රු{{ (stat.value / 1000).toFixed(0) }}k
+                  LKR {{ (stat.value / 1000).toFixed(0) }}k
                 </div>
                 <div class="trend-track rounded-borders">
                   <div
@@ -255,7 +255,7 @@
           </template>
           <template v-slot:body-cell-estRev="props">
             <q-td :props="props" class="text-weight-bold text-green-8">
-              රු {{ formatCurrency(props.row.estRev) }}
+              {{ formatCurrency(props.row.estRev) }}
             </q-td>
           </template>
         </q-table>
@@ -280,7 +280,10 @@ onMounted(() => {
 
 // Formatting helper
 const formatCurrency = (val) => {
-  return Number(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  return (
+    'LKR ' +
+    Number(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  )
 }
 
 // Analytics Computations based on event store
