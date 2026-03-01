@@ -5,10 +5,14 @@
       class="row items-center justify-between q-pa-md bg-white rounded-borders shadow-1 q-mb-md"
     >
       <div class="row items-center q-gutter-md">
-        <!-- SLAF Logo Placeholder -->
-        <q-avatar size="50px" class="bg-slaf-primary text-white font-weight-bold"> SLAF </q-avatar>
+        <!-- Hotel Logo -->
+        <img
+          :src="logoUrl"
+          alt="Eagles' Lagoon View"
+          style="height: 55px; width: auto; object-fit: contain; mix-blend-mode: multiply"
+        />
         <div>
-          <h1 class="text-h5 text-weight-bold q-my-none text-slaf-primary">Command Center</h1>
+          <h1 class="text-h5 text-weight-bold q-my-none text-slaf-primary">Eagles' Lagoon View</h1>
           <div class="text-caption text-grey-7">Receptionist Dashboard</div>
         </div>
       </div>
@@ -207,7 +211,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+
+// Logo URL using BASE_URL for correct path on GitHub Pages
+const logoUrl = computed(() => import.meta.env.BASE_URL + 'images/logo.png')
 
 // Reactive state
 const searchQuery = ref('')
