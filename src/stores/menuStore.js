@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia'
+import { useAuditStore } from './auditStore'
+import { useAuthStore } from './authStore'
 
 export const useMenuStore = defineStore('menus', {
   state: () => ({
@@ -496,17 +498,61 @@ DESSERTS (SELECT FOUR):
         id: Date.now().toString(),
       })
       this.saveToStorage()
+
+      try {
+        const authStore = useAuthStore()
+        const auditStore = useAuditStore()
+        auditStore.logAction({
+          user: authStore.user?.name || 'System',
+          role: authStore.role || 'system',
+          action: 'Created Menu',
+          module: 'Menu Management',
+          details: `Created new menu package: ${menu.name}`,
+        })
+      } catch (e) {
+        console.error('Audit log failed', e)
+      }
     },
     updateMenu(id, updatedMenu) {
       const index = this.menus.findIndex((m) => m.id === id)
       if (index !== -1) {
         this.menus[index] = { ...this.menus[index], ...updatedMenu }
         this.saveToStorage()
+
+        try {
+          const authStore = useAuthStore()
+          const auditStore = useAuditStore()
+          auditStore.logAction({
+            user: authStore.user?.name || 'System',
+            role: authStore.role || 'system',
+            action: 'Updated Menu',
+            module: 'Menu Management',
+            details: `Modified menu package: ${updatedMenu.name}`,
+          })
+        } catch (e) {
+          console.error('Audit log failed', e)
+        }
       }
     },
     deleteMenu(id) {
+      const menuName = this.menus.find((m) => m.id === id)?.name || 'Unknown'
       this.menus = this.menus.filter((m) => m.id !== id)
       this.saveToStorage()
+
+      try {
+        const authStore = useAuthStore()
+        const auditStore = useAuditStore()
+        auditStore.logAction({
+          user: authStore.user?.name || 'System',
+          role: authStore.role || 'system',
+          action: 'Deleted Menu',
+          module: 'Menu Management',
+          details: `Deleted menu package: ${menuName}`,
+          status: 'warning',
+        })
+      } catch (e) {
+        console.error('Audit log failed', e)
+      }
     },
 
     // --- Template Block Actions ---
