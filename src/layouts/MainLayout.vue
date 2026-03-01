@@ -179,22 +179,24 @@ $slaf-accent: #ffd700;
 
 /* Logo styles */
 .toolbar-logo {
-  height: 36px;
+  height: 42px;
   width: auto;
   object-fit: contain;
-  filter: brightness(0) invert(1); /* Makes logo white on dark toolbar */
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.4));
+  margin-right: 4px;
 }
 
 .sidebar-header {
-  padding: 20px 16px 16px;
+  padding: 24px 16px 20px;
+  background: linear-gradient(180deg, #001f6b 0%, #00308f 100%) !important;
 }
 
 .sidebar-logo {
-  width: 120px;
+  width: 150px;
   height: auto;
   object-fit: contain;
-  filter: brightness(0) invert(1); /* White logo on dark sidebar */
   display: block;
   margin: 0 auto;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
 }
 </style>
