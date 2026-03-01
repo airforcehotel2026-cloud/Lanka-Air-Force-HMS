@@ -182,7 +182,7 @@ $slaf-accent: #ffd700;
   height: 42px;
   width: auto;
   object-fit: contain;
-  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.4));
+  mix-blend-mode: screen;
   margin-right: 4px;
 }
 
@@ -197,6 +197,6 @@ $slaf-accent: #ffd700;
   object-fit: contain;
   display: block;
   margin: 0 auto;
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
+  mix-blend-mode: screen;
 }
 </style>
