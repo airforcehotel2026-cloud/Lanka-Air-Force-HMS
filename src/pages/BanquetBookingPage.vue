@@ -838,15 +838,20 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { useMenuStore } from 'src/stores/menuStore'
+import { useEventStore } from 'src/stores/eventStore'
+import { useQuasar } from 'quasar'
 
 // Logo URL for GitHub Pages compatibility
 const logoUrl = computed(() => import.meta.env.BASE_URL + 'images/logo.png')
 
-// Initialize Store
+// Initialize Stores
 const menuStore = useMenuStore()
+const eventStore = useEventStore()
+const $q = useQuasar()
 
 onMounted(() => {
   menuStore.initializeStore()
+  eventStore.initializeStore()
 })
 
 // Auto-fill Net per Person when package changes
@@ -1184,8 +1189,56 @@ const callCustomer = () => {
   }
 }
 
+const saveBookingToStore = () => {
+  if (!form.value.eventDate || !form.value.clientName) return false
+
+  // Build a compact title: EventType - ClientName
+  const title = `${form.value.eventType || form.value.package} - ${form.value.clientName}`
+
+  eventStore.addEvent({
+    title,
+    client: form.value.clientName,
+    date: form.value.eventDate,
+    timeFrom: form.value.timeFrom || '00:00',
+    timeTo: form.value.timeTo || '23:59',
+    venue: form.value.venue || 'Main Banquet Hall',
+    package: form.value.package,
+    pax: form.value.guests || 0,
+    status: 'Confirmed',
+    color: 'slaf-primary',
+  })
+  return true
+}
+
 const printInvoice = () => {
-  window.print()
+  if (!form.value.clientName || !form.value.eventDate) {
+    $q.notify({
+      type: 'warning',
+      message: 'Please fill in Client Name and Event Date before finalizing.',
+      position: 'top',
+    })
+    return
+  }
+
+  $q.dialog({
+    title: '✅ Save & Print Booking',
+    message: `Save this booking for "${form.value.clientName}" (${form.value.eventDate}) to the Calendar and Reports?`,
+    ok: { label: 'Save & Print', color: 'primary', unelevated: true },
+    cancel: { label: 'Print Only', flat: true, color: 'grey' },
+    persistent: true,
+  })
+    .onOk(() => {
+      saveBookingToStore()
+      $q.notify({
+        type: 'positive',
+        message: '📅 Booking saved to Calendar & Reports!',
+        position: 'top',
+      })
+      setTimeout(() => window.print(), 400)
+    })
+    .onCancel(() => {
+      window.print()
+    })
 }
 </script>
 
