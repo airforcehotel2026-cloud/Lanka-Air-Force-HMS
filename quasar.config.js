@@ -178,7 +178,9 @@ export default defineConfig((ctx) => {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-electron-apps/configuring-electron
     electron: {
-      // extendElectronMainConf (esbuildConf) {},
+      extendElectronMainConf(esbuildConf) {
+        esbuildConf.format = 'cjs'
+      },
       // extendElectronPreloadConf (esbuildConf) {},
 
       // extendPackageJson (json) {},

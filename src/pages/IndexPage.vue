@@ -1,5 +1,5 @@
 <template>
-  <q-page class="slaf-dashboard q-pa-lg bg-grey-2">
+  <q-page class="slaf-dashboard q-pa-lg bg-transparent">
     <!-- Top Navigation Custom Header -->
     <header
       class="row items-center justify-between q-pa-md bg-white rounded-borders shadow-1 q-mb-md"

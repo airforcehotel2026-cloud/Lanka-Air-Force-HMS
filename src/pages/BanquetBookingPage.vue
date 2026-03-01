@@ -1,5 +1,5 @@
 <template>
-  <q-page class="slaf-banquet-page bg-grey-2 q-pa-md q-md-pa-lg">
+  <q-page class="slaf-banquet-page bg-transparent q-pa-md q-md-pa-lg">
     <div class="row justify-center print-hide">
       <div class="col-12" style="max-width: 1200px">
         <!-- Header -->

@@ -1,5 +1,9 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout
+    view="lHh Lpr lFf"
+    class="main-layout-bg"
+    :style="{ '--bg-image': `url(${bgImageUrl})` }"
+  >
     <!-- Header -->
     <q-header elevated class="bg-slaf-primary text-white print-hide">
       <q-toolbar>
@@ -146,6 +150,7 @@ import { ref, computed } from 'vue'
 const leftDrawerOpen = ref(false)
 
 const logoUrl = computed(() => import.meta.env.BASE_URL + 'images/logo.png')
+const bgImageUrl = computed(() => import.meta.env.BASE_URL + 'images/hotel-bg.jpg')
 
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
@@ -200,5 +205,33 @@ $slaf-accent: #ffd700;
   display: block;
   margin: 0 auto;
   mix-blend-mode: screen;
+}
+
+/* Background Watermark */
+.main-layout-bg {
+  position: relative;
+  background-color: #f5f7fa; /* Light fresh background color to complement the watermark */
+}
+
+.main-layout-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: var(--bg-image);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  opacity: 0.6; /* 60% opacity as requested by user */
+  z-index: 0;
+  pointer-events: none; /* Mouse clicks pass through */
+}
+
+/* Ensure page containers sit above the background */
+.q-page-container {
+  position: relative;
+  z-index: 1;
 }
 </style>
