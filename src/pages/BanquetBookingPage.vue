@@ -74,6 +74,7 @@
                   outlined
                   dense
                   label="Package"
+                  @update:model-value="onPackageChange"
                 />
               </div>
               <div class="col-12 col-md-3">
@@ -159,6 +160,8 @@
                   outlined
                   dense
                   label="Net per Person (LKR)"
+                  :hint="netPerPersonHint"
+                  :bg-color="form.netPerPerson > 0 ? 'green-1' : ''"
                 />
               </div>
             </div>
@@ -844,6 +847,28 @@ const menuStore = useMenuStore()
 
 onMounted(() => {
   menuStore.initializeStore()
+})
+
+// Auto-fill Net per Person when package changes
+const onPackageChange = (selectedPackage) => {
+  if (selectedPackage === 'Custom') {
+    form.value.netPerPerson = 0
+    return
+  }
+  const menu = menuStore.menus.find((m) => m.name === selectedPackage)
+  if (menu && menu.basePrice > 0) {
+    form.value.netPerPerson = menu.basePrice
+  } else {
+    form.value.netPerPerson = 0
+  }
+}
+
+const netPerPersonHint = computed(() => {
+  if (form.value.package === 'Custom') return 'Enter price manually'
+  const menu = menuStore.menus.find((m) => m.name === form.value.package)
+  if (!menu) return 'Enter price manually'
+  if (menu.basePrice > 0) return `✅ Auto-filled from "${form.value.package}" package`
+  return '⚠️ This package has no fixed price — enter manually'
 })
 
 const packageOptions = computed(() => {
