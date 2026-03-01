@@ -7,7 +7,11 @@
           class="row items-center justify-between q-pa-md bg-white rounded-borders shadow-1 q-mb-md"
         >
           <div class="row items-center q-gutter-md">
-            <q-avatar size="50px" class="bg-primary text-white font-weight-bold"> SLAF </q-avatar>
+            <img
+              :src="logoUrl"
+              alt="Eagles' Lagoon View"
+              style="height: 55px; width: auto; object-fit: contain; mix-blend-mode: multiply"
+            />
             <div>
               <h1 class="text-h5 text-weight-bold q-my-none text-primary">Eagles' Lagoon View</h1>
               <div class="text-caption text-grey-7">Event & Banquet Management System</div>
@@ -678,12 +682,12 @@
         style="border-bottom: 2px solid #00308f"
       >
         <div class="row items-center">
-          <q-avatar
-            size="60px"
-            class="bg-primary text-white font-weight-bold q-mr-md"
-            style="background-color: #00308f !important"
-            >SLAF</q-avatar
-          >
+          <img
+            :src="logoUrl"
+            alt="Eagles' Lagoon View"
+            class="q-mr-md"
+            style="height: 65px; width: auto; object-fit: contain"
+          />
           <div>
             <h1 class="text-h4 text-weight-bold q-my-none" style="color: #00308f">
               Eagles' Lagoon View
@@ -831,6 +835,9 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { useMenuStore } from 'src/stores/menuStore'
+
+// Logo URL for GitHub Pages compatibility
+const logoUrl = computed(() => import.meta.env.BASE_URL + 'images/logo.png')
 
 // Initialize Store
 const menuStore = useMenuStore()
