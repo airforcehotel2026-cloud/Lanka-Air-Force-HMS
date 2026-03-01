@@ -1,23 +1,140 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+    <!-- Header -->
+    <q-header elevated class="bg-slaf-primary text-white print-hide">
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
-
-        <q-toolbar-title> Quasar App </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
+        <q-toolbar-title class="text-weight-bold"> Eagles' Lagoon View </q-toolbar-title>
+        <div class="q-mr-sm">Receptionist Dashboard</div>
+        <q-avatar size="32px" color="slaf-accent" text-color="black">
+          <q-icon name="person" />
+        </q-avatar>
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-      <q-list>
-        <q-item-label header> Essential Links </q-item-label>
+    <!-- Sidebar / Drawer -->
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered class="bg-grey-1 print-hide">
+      <div class="q-pa-md text-center bg-slaf-primary text-white">
+        <q-avatar size="70px" class="q-mb-md bg-white text-slaf-primary font-weight-bold">
+          SLAF
+        </q-avatar>
+        <div class="text-weight-bold text-h6">Sri Lanka Air Force</div>
+        <div class="text-caption text-slaf-accent">Hotel Management System</div>
+      </div>
 
-        <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
+      <q-list padding class="text-grey-9">
+        <q-item-label header class="text-weight-bold">Navigation</q-item-label>
+
+        <q-item
+          clickable
+          v-ripple
+          to="/"
+          exact
+          active-class="bg-slaf-primary text-white text-weight-bold rounded-borders q-mx-sm q-mb-xs transition-bg"
+        >
+          <q-item-section avatar>
+            <q-icon name="dashboard" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Dashboard</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-item
+          clickable
+          v-ripple
+          to="/banquet"
+          active-class="bg-slaf-primary text-white text-weight-bold rounded-borders q-mx-sm q-mb-xs transition-bg"
+        >
+          <q-item-section avatar>
+            <q-icon name="event" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Banquet Booking</q-item-label>
+            <q-item-label caption :class="$route.path.includes('/banquet') ? 'text-blue-2' : ''"
+              >Event Management</q-item-label
+            >
+          </q-item-section>
+        </q-item>
+
+        <q-item
+          clickable
+          v-ripple
+          to="/calendar"
+          active-class="bg-slaf-primary text-white text-weight-bold rounded-borders q-mx-sm q-mb-xs transition-bg"
+        >
+          <q-item-section avatar>
+            <q-icon name="calendar_month" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Calendar</q-item-label>
+            <q-item-label caption :class="$route.path.includes('/calendar') ? 'text-blue-2' : ''"
+              >Event Schedule</q-item-label
+            >
+          </q-item-section>
+        </q-item>
+
+        <q-item
+          clickable
+          v-ripple
+          to="/reports"
+          active-class="bg-slaf-primary text-white text-weight-bold rounded-borders q-mx-sm q-mb-xs transition-bg"
+        >
+          <q-item-section avatar>
+            <q-icon name="assessment" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Reports</q-item-label>
+            <q-item-label caption :class="$route.path.includes('/reports') ? 'text-blue-2' : ''"
+              >Analytics & Export</q-item-label
+            >
+          </q-item-section>
+        </q-item>
+
+        <q-separator class="q-my-md" />
+        <q-item-label header class="text-weight-bold text-overline text-grey-6"
+          >ADMINISTRATION</q-item-label
+        >
+
+        <q-item
+          clickable
+          v-ripple
+          to="/menus"
+          active-class="bg-slaf-primary text-white text-weight-bold rounded-borders q-mx-sm q-mb-xs transition-bg"
+        >
+          <q-item-section avatar>
+            <q-icon name="restaurant_menu" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Manage Menus</q-item-label>
+            <q-item-label caption :class="$route.path.includes('/menus') ? 'text-blue-2' : ''"
+              >Edit Packages & Prices</q-item-label
+            >
+          </q-item-section>
+        </q-item>
+
+        <q-item
+          clickable
+          v-ripple
+          to="/template-blocks"
+          active-class="bg-slaf-primary text-white text-weight-bold rounded-borders q-mx-sm q-mb-xs transition-bg"
+        >
+          <q-item-section avatar>
+            <q-icon name="category" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Template Blocks</q-item-label>
+            <q-item-label
+              caption
+              :class="$route.path.includes('/template-blocks') ? 'text-blue-2' : ''"
+              >Quick Add Items</q-item-label
+            >
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
+    <!-- Page Content -->
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -26,56 +143,38 @@
 
 <script setup>
 import { ref } from 'vue'
-import EssentialLink from 'components/EssentialLink.vue'
-
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev',
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework',
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev',
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev',
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev',
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev',
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev',
-  },
-]
 
 const leftDrawerOpen = ref(false)
 
-function toggleLeftDrawer() {
+const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
 </script>
+
+<style lang="scss">
+$slaf-primary: #00308f;
+$slaf-accent: #ffd700;
+
+.bg-slaf-primary {
+  background-color: $slaf-primary !important;
+}
+.text-slaf-primary {
+  color: $slaf-primary !important;
+}
+.bg-slaf-accent {
+  background-color: $slaf-accent !important;
+}
+.text-slaf-accent {
+  color: $slaf-accent !important;
+}
+.transition-bg {
+  transition: all 0.3s ease;
+}
+.q-item {
+  border-radius: 8px;
+  margin: 0 8px 4px 8px; /* Give some breathing room to the hover state */
+}
+.q-item:not(.bg-slaf-primary):hover {
+  background: #f0f4f8; /* Soft blue-grey hover */
+}
+</style>
