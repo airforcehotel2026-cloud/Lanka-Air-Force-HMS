@@ -744,7 +744,7 @@
           </tr>
           <tr>
             <td><strong>Menu</strong></td>
-            <td>{{ beo.menuSelection || 'N/A' }}</td>
+            <td v-html="printedMenuHtml"></td>
           </tr>
           <tr>
             <td><strong>Setup / Seat Covers</strong></td>
@@ -1031,6 +1031,30 @@ const parsedMenuBlocks = computed(() => {
       rawText: blockText,
     }
   })
+})
+
+const printedMenuHtml = computed(() => {
+  if (!beo.value.menuSelection) return 'N/A'
+
+  const blocks = parsedMenuBlocks.value
+  let html = []
+
+  for (const block of blocks) {
+    if (block.isSelectable) {
+      if (block.selected && block.selected.length > 0) {
+        html.push(
+          `<div style="margin-bottom: 4px;"><strong>${block.header}</strong>: ${block.selected.join(', ')}</div>`,
+        )
+      }
+    } else {
+      if (block.rawText.trim()) {
+        const text = block.rawText.trim().replace(/\n/g, '<br/>')
+        html.push(`<div style="margin-bottom: 4px;">${text}</div>`)
+      }
+    }
+  }
+
+  return html.length > 0 ? html.join('') : beo.value.menuSelection.replace(/\n/g, '<br/>')
 })
 
 const updateMenuBlockSelection = (blockId, newSelection) => {
