@@ -23,6 +23,11 @@ const routes = [
         meta: { requiredRole: 'admin' },
       },
       {
+        path: 'template-blocks',
+        component: () => import('pages/TemplateBlockManagementPage.vue'),
+        meta: { requiredRole: 'admin' },
+      },
+      {
         path: 'inventory',
         component: () => import('pages/InventoryPage.vue'),
         meta: { requiredRole: 'admin' }, // Only admin can access

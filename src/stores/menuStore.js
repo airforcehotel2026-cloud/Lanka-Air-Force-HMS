@@ -9,6 +9,11 @@ export const useMenuStore = defineStore('menus', {
         id: 'bbq-outdoor',
         name: 'BBQ Menu - Outdoor',
         venue: 'Outdoor',
+        kitchenCost: 2000,
+        fbStatus: 'PUBLISHED',
+        gasCharge: 200,
+        officeCharge: 500,
+        profitMargin: 1300,
         basePrice: 4000,
         minPax: 50,
         template: `WELCOME DRINK (Select One):
@@ -38,6 +43,11 @@ DESSERTS:
         id: 'regular-outdoor',
         name: 'Regular Menu - Outdoor',
         venue: 'Outdoor',
+        kitchenCost: 1800,
+        fbStatus: 'PUBLISHED',
+        gasCharge: 180,
+        officeCharge: 500,
+        profitMargin: 1020,
         basePrice: 3500,
         minPax: 50,
         template: `WELCOME DRINK (Select One):
@@ -492,11 +502,18 @@ DESSERTS (SELECT FOUR):
       localStorage.setItem('slaf-menus', JSON.stringify(this.menus))
       localStorage.setItem('slaf-template-blocks', JSON.stringify(this.templateBlocks))
     },
-    addMenu(menu) {
-      this.menus.push({
-        ...menu,
+    addMenu(menuData) {
+      const newMenu = {
+        ...menuData,
         id: Date.now().toString(),
-      })
+        kitchenCost: menuData.kitchenCost || 0,
+        fbStatus: menuData.fbStatus || 'DRAFT',
+        gasCharge: menuData.gasCharge || 0,
+        officeCharge: menuData.officeCharge || 0,
+        profitMargin: menuData.profitMargin || 0,
+        basePrice: menuData.basePrice || 0, // Ensure basePrice is included
+      }
+      this.menus.push(newMenu)
       this.saveToStorage()
 
       try {
@@ -507,7 +524,7 @@ DESSERTS (SELECT FOUR):
           role: authStore.role || 'system',
           action: 'Created Menu',
           module: 'Menu Management',
-          details: `Created new menu package: ${menu.name}`,
+          details: `Created new menu package: ${newMenu.name}`,
         })
       } catch (e) {
         console.error('Audit log failed', e)
