@@ -10,6 +10,7 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') },
       { path: 'banquet', component: () => import('pages/BanquetBookingPage.vue') },
+      { path: 'bookings', component: () => import('pages/BookingsListPage.vue') },
       { path: 'calendar', component: () => import('pages/CalendarPage.vue') },
       { path: 'reports', component: () => import('pages/ReportsPage.vue') },
       {

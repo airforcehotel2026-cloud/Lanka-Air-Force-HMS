@@ -67,12 +67,29 @@
           active-class="bg-slaf-primary text-white text-weight-bold rounded-borders q-mx-sm q-mb-xs transition-bg"
         >
           <q-item-section avatar>
-            <q-icon name="event" />
+            <q-icon name="add_business" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Banquet Booking</q-item-label>
+            <q-item-label>New Booking</q-item-label>
             <q-item-label caption :class="$route.path.includes('/banquet') ? 'text-blue-2' : ''"
-              >Event Management</q-item-label
+              >Create Event</q-item-label
+            >
+          </q-item-section>
+        </q-item>
+
+        <q-item
+          clickable
+          v-ripple
+          to="/bookings"
+          active-class="bg-slaf-primary text-white text-weight-bold rounded-borders q-mx-sm q-mb-xs transition-bg"
+        >
+          <q-item-section avatar>
+            <q-icon name="list_alt" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Bookings Directory</q-item-label>
+            <q-item-label caption :class="$route.path.includes('/bookings') ? 'text-blue-2' : ''"
+              >All Reservations</q-item-label
             >
           </q-item-section>
         </q-item>
@@ -289,7 +306,8 @@ $slaf-accent: #ffd700;
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  opacity: 0.6; /* 60% opacity as requested by user */
+  opacity: 0.05; /* Super subtle opacity to look like a premium watermark */
+  filter: grayscale(100%); /* Desaturate so it doesn't clash with the blue/gold theme */
   z-index: 0;
   pointer-events: none; /* Mouse clicks pass through */
 }

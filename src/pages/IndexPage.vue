@@ -1,6 +1,7 @@
 <template>
   <q-page class="slaf-dashboard q-pa-lg bg-transparent">
-    <!-- Top Navigation Custom Header -->
+    <div class="print-hide">
+      <!-- Top Navigation Custom Header -->
     <header
       class="row items-center justify-between q-pa-md bg-white rounded-borders shadow-1 q-mb-md"
     >
@@ -49,64 +50,181 @@
 
     <!-- Global Reminders & Alerts automations -->
     <div class="q-mb-lg" v-if="upcomingReminders.length > 0">
-      <div class="text-h6 text-slaf-primary text-weight-bold q-mb-sm">
-        <q-icon name="notifications_active" class="q-mr-sm" /> Automated Event Alerts
+      <div class="row items-center justify-between q-mb-sm">
+        <div class="text-h6 text-slaf-primary text-weight-bold flex items-center">
+          <q-icon name="notifications_active" class="q-mr-sm" /> Automated Event Alerts
+        </div>
+        <div class="q-gutter-sm">
+          <q-btn
+            unelevated
+            rounded
+            size="sm"
+            :color="activeAlertFilter === 'All' ? 'slaf-primary' : 'grey-3'"
+            :text-color="activeAlertFilter === 'All' ? 'white' : 'grey-8'"
+            @click="activeAlertFilter = 'All'"
+            label="All"
+            class="action-btn"
+          >
+            <q-badge color="negative" floating rounded v-if="upcomingReminders.length">{{ upcomingReminders.length }}</q-badge>
+          </q-btn>
+          <q-btn
+            unelevated
+            rounded
+            size="sm"
+            :color="activeAlertFilter === 'T-14' ? 'negative' : 'grey-3'"
+            :text-color="activeAlertFilter === 'T-14' ? 'white' : 'grey-8'"
+            @click="activeAlertFilter = 'T-14'"
+            label="T-14 Days"
+            class="action-btn"
+          >
+            <q-badge color="white" text-color="black" floating rounded v-if="t14Count">{{ t14Count }}</q-badge>
+          </q-btn>
+          <q-btn
+            unelevated
+            rounded
+            size="sm"
+            :color="activeAlertFilter === 'T-45' ? 'warning' : 'grey-3'"
+            :text-color="activeAlertFilter === 'T-45' ? 'white' : 'grey-8'"
+            @click="activeAlertFilter = 'T-45'"
+            label="T-45 Days"
+            class="action-btn"
+          >
+            <q-badge color="white" text-color="black" floating rounded v-if="t45Count">{{ t45Count }}</q-badge>
+          </q-btn>
+        </div>
       </div>
 
-      <div v-for="(reminder, index) in upcomingReminders" :key="index" class="q-mb-sm">
-        <q-banner
-          v-if="reminder.type === 'T-14'"
-          class="bg-red-1 text-red-9 border-negative shadow-1"
-          rounded
-        >
-          <template v-slot:avatar>
-            <q-icon name="error" color="negative" />
-          </template>
-          <div class="text-weight-bold text-subtitle1">
-            T-14 Days: {{ reminder.event }} ({{ reminder.date }})
-          </div>
-          <div class="text-caption">
-            Finalize the menu and collect the full remaining balance immediately. Client:
-            {{ reminder.client }}
-          </div>
-          <template v-slot:action>
-            <q-btn
-              flat
-              color="negative"
-              icon="phone"
-              label="Call Customer"
-              @click="callCustomer(reminder.phone)"
-            />
-          </template>
-        </q-banner>
+      <div class="scroll custom-scrollbar" style="max-height: 280px; padding-right: 4px;">
+        <div v-for="(reminder, index) in filteredReminders" :key="index" class="q-mb-sm">
+          <q-banner
+            v-if="reminder.type === 'T-14'"
+            class="bg-red-1 text-red-9 border-negative shadow-1 q-py-xs cursor-pointer transition-scale"
+            rounded
+            dense
+            @click="openOrderDetails(reminder)"
+          >
+            <template v-slot:avatar>
+              <q-icon name="error" color="negative" size="sm" />
+            </template>
+            <div class="text-weight-bold text-subtitle2" style="line-height: 1.2;">
+              T-14: {{ reminder.event }} ({{ reminder.date }})
+            </div>
+            <div class="text-caption" style="line-height: 1.2;">
+              Finalize menu & collect balance. Client: {{ reminder.client }}
+            </div>
+            <template v-slot:action>
+              <q-btn
+                flat
+                dense
+                size="sm"
+                color="negative"
+                icon="phone"
+                label="Call"
+                @click.stop="callCustomer(reminder.phone)"
+              />
+            </template>
+          </q-banner>
 
-        <q-banner
-          v-if="reminder.type === 'T-45'"
-          class="bg-orange-1 text-orange-9 border-warning shadow-1"
-          rounded
-        >
-          <template v-slot:avatar>
-            <q-icon name="warning" color="warning" />
-          </template>
-          <div class="text-weight-bold text-subtitle1">
-            T-45 Days: {{ reminder.event }} ({{ reminder.date }})
-          </div>
-          <div class="text-caption">
-            Client should pay 50% of the calculated total package by now. Client:
-            {{ reminder.client }}
-          </div>
-          <template v-slot:action>
-            <q-btn
-              flat
-              color="warning"
-              icon="phone"
-              label="Call Customer"
-              @click="callCustomer(reminder.phone)"
-              text-color="orange-10"
-            />
-          </template>
-        </q-banner>
+          <q-banner
+            v-if="reminder.type === 'T-45'"
+            class="bg-orange-1 text-orange-9 border-warning shadow-1 q-py-xs cursor-pointer transition-scale"
+            rounded
+            dense
+            @click="openOrderDetails(reminder)"
+          >
+            <template v-slot:avatar>
+              <q-icon name="warning" color="warning" size="sm" />
+            </template>
+            <div class="text-weight-bold text-subtitle2" style="line-height: 1.2;">
+              T-45: {{ reminder.event }} ({{ reminder.date }})
+            </div>
+            <div class="text-caption" style="line-height: 1.2;">
+              Collect 50% package payment. Client: {{ reminder.client }}
+            </div>
+            <template v-slot:action>
+              <q-btn
+                flat
+                dense
+                size="sm"
+                color="warning"
+                icon="phone"
+                label="Call"
+                @click.stop="callCustomer(reminder.phone)"
+                text-color="orange-10"
+              />
+            </template>
+          </q-banner>
+        </div>
       </div>
+
+      <!-- Invoice Modal -->
+      <q-dialog v-model="orderModalOpen">
+        <q-card style="min-width: 450px; max-width: 800px; border-radius: 12px;">
+          <q-card-section class="bg-slaf-primary text-white row items-center justify-between">
+            <div class="text-h6 flex items-center"><q-icon name="receipt_long" class="q-mr-sm" /> Order Details / Bill</div>
+            <q-btn icon="close" flat round dense v-close-popup />
+          </q-card-section>
+
+          <q-card-section class="q-pt-md" v-if="selectedOrder">
+            <!-- Bill Header -->
+            <div class="row q-col-gutter-md q-mb-md">
+              <div class="col-8">
+                <div class="text-h6 text-weight-bold text-slaf-primary">{{ selectedOrder.client }}</div>
+                <div class="text-caption text-grey-8"><q-icon name="phone" /> Phone: {{ selectedOrder.phone }}</div>
+                <div class="text-caption text-grey-8"><q-icon name="event" /> Event: {{ selectedOrder.event }}</div>
+              </div>
+              <div class="col-4 text-right">
+                <div class="text-weight-bold">Date: {{ selectedOrder.dateStr }}</div>
+                <q-badge :color="selectedOrder.type === 'T-14' ? 'negative' : 'warning'" class="q-mt-xs">{{ selectedOrder.type }} Alert</q-badge>
+              </div>
+            </div>
+            
+            <q-separator class="q-my-sm" />
+
+            <!-- Order Specs -->
+            <div class="row q-mb-md">
+              <div class="col-6">
+                <div class="text-caption text-grey-6">Reserved Venue</div>
+                <div class="text-body2 text-weight-bold">{{ selectedOrder.venue }}</div>
+              </div>
+              <div class="col-6 text-right">
+                <div class="text-caption text-grey-6">Expected Pax</div>
+                <div class="text-body2 text-weight-bold">{{ selectedOrder.pax }} Guests</div>
+              </div>
+            </div>
+
+            <q-separator class="q-mb-md" />
+
+            <!-- Financial Breakdown -->
+            <div class="text-subtitle2 text-weight-bold q-mb-sm text-slaf-primary">Financial Summary</div>
+            
+            <div class="row justify-between q-mb-xs">
+              <span class="text-grey-9">{{ selectedOrder.menu }} Package</span>
+              <span class="text-weight-medium">Rs. {{ selectedOrder.totalAmount.toLocaleString() }}.00</span>
+            </div>
+            <div class="row justify-between q-mb-xs text-slaf-success">
+              <span>Advance Paid</span>
+              <span class="text-weight-bold">- Rs. {{ selectedOrder.paidAmount.toLocaleString() }}.00</span>
+            </div>
+            
+            <q-separator class="q-my-sm" />
+            
+            <div class="row justify-between text-h6 text-weight-bold text-negative">
+              <span>Balance Due</span>
+              <span>Rs. {{ (selectedOrder.totalAmount - selectedOrder.paidAmount).toLocaleString() }}.00</span>
+            </div>
+            <div class="text-right text-caption text-grey-6 q-mt-sm">
+              Action Required: {{ selectedOrder.type === 'T-14' ? 'Collect full balance before event.' : 'Collect 50% package payment.' }}
+            </div>
+          </q-card-section>
+
+          <q-card-actions align="right" class="bg-grey-1 q-pa-md">
+            <q-btn flat label="Close" color="grey-8" v-close-popup />
+            <q-btn icon="print" outline label="Print Bill" color="slaf-primary" @click="printBill" />
+            <q-btn icon="payment" unelevated label="Collect Payment" color="slaf-success" @click="collectPayment" />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </div>
 
     <!-- Quick Stats Cards -->
@@ -207,11 +325,104 @@
         </q-card>
       </div>
     </div>
+    </div>
+
+    <!-- Hidden Print Section (Invoice/BEO Style) -->
+    <div class="invoice-section bg-white text-black" v-if="selectedOrder">
+      <div
+        class="row items-center justify-between q-mb-lg pb-4"
+        style="border-bottom: 2px solid #00308f; padding-bottom: 20px;"
+      >
+        <div class="row items-center">
+          <img
+            :src="logoUrl"
+            alt="Eagles' Lagoon View"
+            class="q-mr-md"
+            style="height: 65px; width: auto; object-fit: contain"
+          />
+          <div>
+            <h1 class="text-h4 text-weight-bold q-my-none" style="color: #00308f">
+              Eagles' Lagoon View
+            </h1>
+            <div class="text-subtitle1 text-grey-8">Dashboard Collection Bill</div>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-weight-bold" style="color: #00308f">Print Date</div>
+          <div>{{ new Date().toLocaleDateString('en-GB') }}</div>
+        </div>
+      </div>
+
+      <div class="row q-col-gutter-lg q-mb-lg">
+        <div class="col-6">
+          <div class="text-weight-bold text-uppercase q-mb-sm" style="color: #00308f">
+            Client Details
+          </div>
+          <div><strong>Name:</strong> {{ selectedOrder.client }}</div>
+          <div><strong>Phone:</strong> {{ selectedOrder.phone }}</div>
+        </div>
+        <div class="col-6">
+          <div class="text-weight-bold text-uppercase q-mb-sm" style="color: #00308f">
+            Event Info
+          </div>
+          <div><strong>Event:</strong> {{ selectedOrder.event }}</div>
+          <div><strong>Date:</strong> {{ selectedOrder.dateStr }}</div>
+          <div><strong>Venue:</strong> {{ selectedOrder.venue }}</div>
+          <div><strong>Expected Pax:</strong> {{ selectedOrder.pax }}</div>
+        </div>
+      </div>
+
+      <div class="text-weight-bold text-uppercase q-mb-sm q-mt-lg" style="color: #00308f">
+        Financial Summary
+      </div>
+      <table class="full-width invoice-table text-right">
+        <thead>
+          <tr style="background-color: #f5f5f5">
+            <th class="text-left">Description</th>
+            <th>Amount (Rs.)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-left">{{ selectedOrder.menu }} Package ({{ selectedOrder.pax }} Pax)</td>
+            <td>{{ selectedOrder.totalAmount.toLocaleString() }}.00</td>
+          </tr>
+          <tr>
+            <td class="text-left">- Advance Paid</td>
+            <td style="color: #c10015">- {{ selectedOrder.paidAmount.toLocaleString() }}.00</td>
+          </tr>
+          <tr
+            style="
+              font-size: 1.2em;
+              border-top: 2px solid #00308f;
+              border-bottom: 2px solid #00308f;
+              background-color: #e3f2fd;
+              color: #00308f;
+            "
+          >
+            <td class="text-left text-weight-bold">Final Balance Pending</td>
+            <td class="text-weight-bold">{{ (selectedOrder.totalAmount - selectedOrder.paidAmount).toLocaleString() }}.00</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="row justify-between q-mt-xl pt-xl" style="padding-top: 80px">
+        <div class="text-center" style="width: 200px; border-top: 1px solid #000; padding-top: 5px">
+          Client Signature
+        </div>
+        <div class="text-center" style="width: 200px; border-top: 1px solid #000; padding-top: 5px">
+          Authorized Officer
+        </div>
+      </div>
+    </div>
   </q-page>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useQuasar } from 'quasar'
+
+const $q = useQuasar()
 
 // Logo URL using BASE_URL for correct path on GitHub Pages
 const logoUrl = computed(() => import.meta.env.BASE_URL + 'images/logo.png')
@@ -283,6 +494,52 @@ const updateDateTime = () => {
 
 // Automated Global Reminders Logic
 const upcomingReminders = ref([])
+const activeAlertFilter = ref('All')
+
+const orderModalOpen = ref(false)
+const selectedOrder = ref(null)
+
+const openOrderDetails = (order) => {
+  selectedOrder.value = order
+  orderModalOpen.value = true
+}
+
+const printBill = () => {
+  window.print()
+  $q.notify({
+    type: 'positive',
+    message: `Printing bill for ${selectedOrder.value.client}...`,
+    icon: 'print',
+    position: 'top-right'
+  })
+}
+
+const collectPayment = () => {
+  const amountToCollect = selectedOrder.value.totalAmount - selectedOrder.value.paidAmount
+  
+  $q.notify({
+    type: 'positive',
+    message: `Payment of Rs. ${amountToCollect.toLocaleString()} collected from ${selectedOrder.value.client}!`,
+    icon: 'check_circle',
+    position: 'top-right'
+  })
+  
+  // Update mock DB (remove this order from notifications)
+  upcomingReminders.value = upcomingReminders.value.filter(r => r !== selectedOrder.value)
+  
+  // Close the modal
+  orderModalOpen.value = false
+}
+
+const t14Count = computed(() => upcomingReminders.value.filter((r) => r.type === 'T-14').length)
+const t45Count = computed(() => upcomingReminders.value.filter((r) => r.type === 'T-45').length)
+
+const filteredReminders = computed(() => {
+  if (activeAlertFilter.value === 'All') {
+    return upcomingReminders.value
+  }
+  return upcomingReminders.value.filter((r) => r.type === activeAlertFilter.value)
+})
 
 // In a real application, this would be an API call to your database (e.g. Supabase)
 const checkUpcomingEvents = () => {
@@ -290,20 +547,37 @@ const checkUpcomingEvents = () => {
   today.setHours(0, 0, 0, 0)
 
   // Mocking database records for upcoming events
-  const dbEvents = [
-    {
-      client: 'Sqn Ldr A.B. Perera',
-      event: 'Wedding Reception',
+  const dbEvents = []
+  
+  // Add 20 T-14 events
+  for(let i = 1; i <= 20; i++) {
+    dbEvents.push({
+      client: `Sqn Ldr Perera ${i}`,
+      event: `Wedding Reception ${i}`,
       dateStr: new Date(today.getTime() + 12 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      phone: '0771234567',
-    },
-    {
-      client: 'Mr. Nimal Fernando',
-      event: 'Corporate Dinner',
+      phone: `07712345${i.toString().padStart(2, '0')}`,
+      venue: 'Main Banquet Hall',
+      pax: 350 + i * 5,
+      menu: 'SLAF Platinum Package',
+      totalAmount: 1100000,
+      paidAmount: 550000
+    })
+  }
+
+  // Add 20 T-45 events
+  for(let i = 1; i <= 20; i++) {
+    dbEvents.push({
+      client: `Mr. Nimal Fernando ${i}`,
+      event: `Corporate Dinner ${i}`,
       dateStr: new Date(today.getTime() + 40 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      phone: '0719876543',
-    },
-  ]
+      phone: `07198765${i.toString().padStart(2, '0')}`,
+      venue: 'Lagoon Garden',
+      pax: 150 + i * 2,
+      menu: 'Standard Buffet Package',
+      totalAmount: 450000,
+      paidAmount: 50000
+    })
+  }
 
   const reminders = []
 
@@ -539,5 +813,57 @@ $slaf-maintenance: #ff9800; /* Orange - Dirty/Maint */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.invoice-section {
+  display: none;
+}
+
+@media print {
+  @page {
+    margin: 1cm;
+    size: auto;
+  }
+
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    background-color: white !important;
+  }
+
+  .print-hide,
+  .q-drawer-container,
+  .q-header,
+  .q-footer,
+  aside.q-drawer,
+  .q-layout__shadow,
+  .q-dialog,
+  .q-dialog__backdrop {
+    display: none !important;
+  }
+
+  .q-page-container {
+    padding: 0 !important;
+  }
+
+  .invoice-section {
+    display: block !important;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+  }
+
+  .invoice-table {
+    border-collapse: collapse;
+  }
+  
+  .invoice-table td,
+  .invoice-table th {
+    border: 1px solid #ccc;
+    padding: 10px;
+  }
 }
 </style>
