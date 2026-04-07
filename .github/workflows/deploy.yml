@@ -17,14 +17,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4  # v3 වෙනුවට v4 පාවිච්චි කරන්න
         with:
-          version: 9
+          version: 10              # 9 වෙනුවට 10 දාන්න (අර engine error එක නිසා)
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22          # Node 20 වෙනුවට 22 (LTS) පාවිච්චි කිරීම හොඳයි
           cache: 'pnpm'
 
       - name: Install dependencies
