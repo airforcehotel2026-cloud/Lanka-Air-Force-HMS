@@ -1314,6 +1314,40 @@ const saveBookingToStore = () => {
     pax: form.value.guests || 0,
     status: 'Confirmed',
     color: 'slaf-primary',
+    clientDetails: {
+      nic: form.value.nic,
+      mobile: form.value.mobile,
+      telephone: form.value.telephone,
+      address: form.value.address,
+      email: form.value.email,
+      profession: form.value.profession
+    },
+    beoDetails: {
+      location: beo.value.location,
+      poruwaTime: beo.value.poruwaTime,
+      servingTime: beo.value.servingTime,
+      menuSelection: printedMenuHtml.value, // Save the rendered HTML directly
+      setup: beo.value.setup,
+      seatCovers: beo.value.seatCovers,
+      decorations: beo.value.decorations,
+      multimedia: beo.value.multimedia,
+      coordinator: beo.value.coordinator,
+      specialRemarks: beo.value.specialRemarks,
+      teaTable: beo.value.teaTable,
+      teaTablePax: beo.value.teaTablePax,
+      teaTableTime: beo.value.teaTableTime
+    },
+    billing: {
+      mainPackageTotal: mainPackageTotal.value,
+      extraFoodTotal: extraFoodTotal.value,
+      otherChargesTotal: otherChargesTotal.value,
+      grandTotal: grandTotal.value,
+      discount: payments.value.discount || 0,
+      deposit: payments.value.deposit || 0,
+      advance: payments.value.advance || 0,
+      finalDue: finalPayment.value,
+      netPerPerson: form.value.netPerPerson
+    },
   })
 
   // Also save to CRM
