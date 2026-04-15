@@ -1,4 +1,4 @@
-import{n as e}from"./pinia-DpQ4HuxA.js";import{t}from"./auditStore-DhyyglUF.js";import{s as n}from"./index-WJTMDSym.js";var r=e(`menus`,{state:()=>({menus:[{id:`bbq-outdoor`,name:`BBQ Menu - Outdoor`,venue:`Outdoor`,kitchenCost:2e3,fbStatus:`PUBLISHED`,gasCharge:200,officeCharge:500,profitMargin:1300,basePrice:4e3,minPax:50,template:`WELCOME DRINK (Select One):
+import{n as e}from"./pinia-DpQ4HuxA.js";import{t}from"./auditStore-DhyyglUF.js";import{s as n}from"./index-B5F9xxl8.js";var r=e(`menus`,{state:()=>({menus:[{id:`bbq-outdoor`,name:`BBQ Menu - Outdoor`,venue:`Outdoor`,kitchenCost:2e3,fbStatus:`PUBLISHED`,gasCharge:200,officeCharge:500,profitMargin:1300,basePrice:4e3,minPax:50,template:`WELCOME DRINK (Select One):
 - Orange / Mixed Fruit / Strawberry & Guava / Black Currant
 [Selected: ]
 
