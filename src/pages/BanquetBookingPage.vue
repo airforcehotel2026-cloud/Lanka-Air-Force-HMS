@@ -1396,7 +1396,7 @@ const printInvoice = () => {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 /* SLAF Branding Variables applied strictly for this component */
 $primary: #00308f;
 $accent: #ffd700;

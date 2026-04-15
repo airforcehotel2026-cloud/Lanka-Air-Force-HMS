@@ -1449,6 +1449,7 @@ const formatCurrency = (val) =>
 }
 
 .invoice-section {
+  display: block !important;
   width: 100%;
   max-width: 850px;
   min-height: 1000px;
